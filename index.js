@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 
@@ -12,6 +13,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const db = require("./app/models");
 const Role = db.role;
