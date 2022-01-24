@@ -115,14 +115,13 @@ exports.signin = (req, res) => {
                     res.status(500).send({ message: err });
                     return;
                 }
-    
-                res.setHeader("Set-Cookie", `refreshToken=${refreshToken.token}; HttpOnly`);
 
                 res.status(200).send({
                     id: user._id,
                     username: user.username,
                     email: user.email,
                     roles: authorities,
+                    refreshToken: refreshToken.token,
                     accessToken: token,
                     tokenExpiry: 900,
                 });
@@ -133,7 +132,7 @@ exports.signin = (req, res) => {
 
 exports.refreshAccessToken = (req, res) => {
     RefreshToken.findOneAndDelete({
-        token: req.cookies.refreshToken
+        token: req.body.refreshToken
     }, (err, token) => {
         if (err) {
             res.status(401).send("No refresh token provided.")
@@ -155,8 +154,8 @@ exports.refreshAccessToken = (req, res) => {
                 expiresIn: 900 // 24 hours
             });
 
-            res.setHeader("Set-Cookie", `refreshToken=${newToken.token}; HttpOnly`);
             res.status(200).send({
+                refreshToken: newToken.token,
                 accessToken: token,
                 tokenExpiry: 900
             })
