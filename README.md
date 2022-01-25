@@ -2,7 +2,7 @@
 
 Documentation for endpoints of backend.
 
-**Note: all endpoints start /api **
+* Note: all endpoints start /api *
 
 ## /auth
 
@@ -61,7 +61,7 @@ JSON Outputs:
 
 ### POST /create
 
-**Note: Must be signed in with x-access-token header **
+* Note: Must be signed in with x-access-token header *
 
 JSON Inputs:
 
@@ -75,7 +75,7 @@ Returns confirmation of field creation.
 
 ### GET /getFieldByUser
 
-**Note: Must be signed in with x-access-token header **
+* Note: Must be signed in with x-access-token header *
 
 JSON Outputs:
 
