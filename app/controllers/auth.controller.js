@@ -1,6 +1,5 @@
 const db = require("../models");
 const User = db.user;
-const Role = db.role;
 const RefreshToken = db.refreshToken;
 
 var jwt = require("jsonwebtoken");
@@ -9,67 +8,46 @@ require("dotenv").config();
 
 var generator = require("./generateRefreshToken");
 
-exports.signup = (req, res) => {
-    const user = new User({
-        username: req.body.username,
+// exports.signup = (req, res) => {
+//     const user = new User({
+//         firstName: req.body.firstName,
+//         lastName: req.body.lastName,
+//         email: req.body.email,
+//         password: bcrypt.hashSync(req.body.password, 8),
+//         mustOnboard: true
+//     });
+
+//     user.save((err) => {
+//         if (err) {
+//             res.status(500).send({ message: err });
+//             return;
+//         }
+
+//         res.status(200).send("User successfully created.")
+//     });
+// };
+
+exports.signup = async (req, res) => {
+    const user = await User.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8)
+        password: bcrypt.hashSync(req.body.password, 8),
+        mustOnboard: true
     });
 
-    user.save((err, user) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-        }
-
-        if (req.body.roles) {
-            Role.find(
-                {
-                    name: { $in: req.body.roles }
-                },
-                (err, roles) => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-
-                    user.roles = roles.map(role => role._id);
-                    user.save(err => {
-                        if (err) {
-                            res.status(500).send({ message: err });
-                            return;
-                        }
-
-                        res.send({ message: "User successfully registered" })
-                    });
-                }
-            );
-        } else {
-            Role.findOne({ name: "user" }, (err, role) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    return;
-                }
-
-                user.roles = [role._id];
-                user.save(err => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-
-                    res.send({ message: "User successfully registered" })
-                });
-            });
-        }
+    await user.save().catch((err) => {
+        res.status(500).send({ message: err });
+        return;
     });
-};
+
+    return res.status(201).send("User created.")
+}
 
 exports.signin = (req, res) => {
     User.findOne({
         email: req.body.email
     })
-    .populate("roles", "-__v")
     .exec((err, user) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -96,12 +74,6 @@ exports.signin = (req, res) => {
             expiresIn: 900 // 15 minutes
         });
 
-        let authorities = [];
-
-        for (let i = 0; i < user.roles.length; i++) {
-            authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-        }
-
         RefreshToken.deleteMany({
             userRef: user._id
         }, () => {
@@ -118,9 +90,10 @@ exports.signin = (req, res) => {
 
                 res.status(200).send({
                     id: user._id,
-                    username: user.username,
                     email: user.email,
-                    roles: authorities,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    mustOnboard: user.mustOnboard,
                     refreshToken: refreshToken.token,
                     accessToken: token,
                     tokenExpiry: 900,
