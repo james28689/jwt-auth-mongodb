@@ -10,7 +10,7 @@ const app = express();
 const httpServer = createServer(app);
 
 const corsOptions = {
-    origin: process.env.SOCKET_CORS_ADDRESS
+    origin: process.env.CORS_ADDRESS
 }
 
 app.use(cors(corsOptions));
