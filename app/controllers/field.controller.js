@@ -5,7 +5,7 @@ const User = db.user;
 exports.addField = async (req, res) => {
     const field = await Field.create({
         name: req.body.name,
-        user: req.body.userID,
+        user: req.userID,
         rpa_field_id: req.body.rpa_field_id,
         geometry: req.body.geometry
     });
@@ -14,7 +14,7 @@ exports.addField = async (req, res) => {
         return;
     });
 
-    const user = await User.findById(req.body.userID).catch((err) => {
+    const user = await User.findById(req.userID).catch((err) => {
         return res.status(500).send({ message: err })
     })
     user.fields.push(field);
@@ -27,7 +27,7 @@ exports.addField = async (req, res) => {
 }
 
 exports.getFieldByUser = async (req, res) => {
-    const user = await User.findById(req.body.userID).populate("fields").catch((err) => {
+    const user = await User.findById(req.userID).populate("fields").catch((err) => {
         res.status(500).send({ message: err });
         return;
     })

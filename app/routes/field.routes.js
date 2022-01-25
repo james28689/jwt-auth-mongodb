@@ -8,7 +8,7 @@ module.exports = function(app) {
         controller.addField
     );
 
-    app.post(
+    app.get(
         "/api/field/getFieldByUser",
         [authJwt.verifyToken],
         controller.getFieldByUser
