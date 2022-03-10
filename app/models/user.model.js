@@ -13,6 +13,30 @@ const User = mongoose.model(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Field"
             }
+        ],
+        stocks: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Stock"
+            }
+        ],
+        sales: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Sale"
+            }
+        ],
+        costs: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Cost"
+            }
+        ],
+        usages: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Usage"
+            }
         ]
     })
 )

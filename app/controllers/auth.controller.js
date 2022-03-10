@@ -8,25 +8,6 @@ require("dotenv").config();
 
 var generator = require("./generateRefreshToken");
 
-// exports.signup = (req, res) => {
-//     const user = new User({
-//         firstName: req.body.firstName,
-//         lastName: req.body.lastName,
-//         email: req.body.email,
-//         password: bcrypt.hashSync(req.body.password, 8),
-//         mustOnboard: true
-//     });
-
-//     user.save((err) => {
-//         if (err) {
-//             res.status(500).send({ message: err });
-//             return;
-//         }
-
-//         res.status(200).send("User successfully created.")
-//     });
-// };
-
 exports.signup = async (req, res) => {
     const user = await User.create({
         firstName: req.body.firstName,
@@ -45,6 +26,7 @@ exports.signup = async (req, res) => {
 }
 
 exports.signin = (req, res) => {
+    console.log("Sign in request", req.body.email, req.body.password)
     User.findOne({
         email: req.body.email
     })
@@ -55,7 +37,7 @@ exports.signin = (req, res) => {
         }
 
         if (!user) {
-            return res.status(404).send({ message: "User not found." });
+            return res.status(200).send({ message: "User not found." });
         }
 
         let passwordIsValid = bcrypt.compareSync(
@@ -106,16 +88,16 @@ exports.signin = (req, res) => {
 exports.refreshAccessToken = (req, res) => {
     RefreshToken.findOneAndDelete({
         token: req.body.refreshToken
-    }, (err, token) => {
+    }, (err, deletedToken) => {
         if (err) {
             res.status(401).send("No refresh token provided.")
             return;
         }
 
         const newRefreshToken = new RefreshToken({
-            userRef: token.userRef,
+            userRef: deletedToken.userRef,
             token: generator.genRefreshToken()
-        })
+        });
 
         newRefreshToken.save((err, newToken) => {
             if (err) {
@@ -123,15 +105,73 @@ exports.refreshAccessToken = (req, res) => {
                 return;
             }
 
-            let token = jwt.sign({ id: newToken.userRef.toString() }, process.env.JWT_SECRET, {
-                expiresIn: 900 // 24 hours
-            });
+            if (newToken) {
+                let token = jwt.sign({ id: newToken.userRef.toString() }, process.env.JWT_SECRET, {
+                    expiresIn: 900 // 24 hours
+                });
+    
+                res.status(200).send({
+                    refreshToken: newToken.token,
+                    accessToken: token,
+                    tokenExpiry: 900
+                });
 
-            res.status(200).send({
-                refreshToken: newToken.token,
-                accessToken: token,
-                tokenExpiry: 900
-            })
+                return;
+            }
+
+            res.status(500).send("Refresh token not found")
+            return;
         })
+    })
+}
+
+exports.changeEmail = (req, res) => {
+    User.findByIdAndUpdate(req.userID, { email: req.body.email }, { upsert: false }, (err, doc, mongoRes) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+
+        console.log(doc, mongoRes);
+        res.status(200).send("Email successfully updated");
+        return;
+    })
+}
+
+exports.changePassword = (req, res) => {
+    User.findByIdAndUpdate(req.userID, { password: bcrypt.hashSync(req.body.password, 8) }, { upsert: false }, (err, doc, mongoRes) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        }
+
+        console.log(doc, mongoRes);
+        res.status(200).send("Password successfully updated");
+        return;
+    })
+}
+
+exports.changeOnboard = (req, res) => {
+    User.findByIdAndUpdate(req.userID, { mustOnboard: req.body.mustOnboard }, { upsert: false }, (err, doc, mongoRes) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+
+        console.log(doc, mongoRes);
+        res.status(200).send("User marked onboard");
+        return;
+    })
+}
+
+exports.getUserData = (req, res) => {
+    User.findById(req.userID, (err, user) => {
+        if (err) {
+            res.status(500).send({ message: err });
+        }
+
+        delete user.password;
+
+        console.log(user);
+        res.status(200).send(user);
     })
 }

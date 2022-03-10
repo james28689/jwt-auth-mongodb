@@ -1,19 +1,27 @@
 const express = require("express");
-const { createServer } = require("http");
+const { createServer } = require("https");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 
+let env = process.env.NODE_ENV || "development"
 
-const app = express();
-const httpServer = createServer(app);
+if (env == "development") {
+    var fs = require("fs");
+    var options = {
+        key: fs.readFileSync(__dirname + "/localhost-key.pem", "utf-8"),
+        cert: fs.readFileSync(__dirname + "/localhost.pem", "utf-8")
+    }
 
-const corsOptions = {
-    origin: process.env.CORS_ADDRESS
+    var app = express();
+    var httpServer = createServer(options, app);
+} else {
+    var app = express();
+    var httpServer = createServer(app);
 }
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -37,6 +45,10 @@ app.get("/", (req, res) => {
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/field.routes")(app);
+require("./app/routes/stock.routes")(app);
+require("./app/routes/sale.routes")(app);
+require("./app/routes/cost.routes")(app);
+require("./app/routes/usage.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 
