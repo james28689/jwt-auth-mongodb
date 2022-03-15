@@ -175,3 +175,11 @@ exports.getUserData = (req, res) => {
         res.status(200).send(user);
     })
 }
+
+exports.deleteUserData = async (req, res) => {
+    User.findByIdAndDelete(req.userID).catch(err => {
+        return res.status(500).send({message: err});
+    });
+
+    return res.status(201).send("Costs deleted.");
+}

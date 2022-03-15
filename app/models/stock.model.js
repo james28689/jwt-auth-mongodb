@@ -6,8 +6,6 @@ const Stock = mongoose.model(
         name: String,
         type: String,
         units: String,
-        amount: Number,
-        used: Number,
         orders: [
             {
                 date: Date,

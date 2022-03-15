@@ -25,4 +25,10 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.deleteCost
     );
+
+    app.delete(
+        "/api/cost/delete-all",
+        [authJwt.verifyToken],
+        controller.deleteAllCostsByUser
+    );
 }

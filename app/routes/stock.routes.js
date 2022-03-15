@@ -31,4 +31,10 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.deleteStock
     )
+
+    app.delete(
+        "/api/stock/delete-all",
+        [authJwt.verifyToken],
+        controller.deleteAllStocksByUser
+    );
 }

@@ -25,4 +25,10 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.deleteSale
     );
+
+    app.delete(
+        "/api/sale/delete-all",
+        [authJwt.verifyToken],
+        controller.deleteAllSalesByUser
+    );
 }

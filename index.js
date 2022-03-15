@@ -39,11 +39,10 @@ db.mongoose
     });
 
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to my application." });
+    res.json({ message: "Agri App Backend." });
 });
 
 require("./app/routes/auth.routes")(app);
-require("./app/routes/user.routes")(app);
 require("./app/routes/field.routes")(app);
 require("./app/routes/stock.routes")(app);
 require("./app/routes/sale.routes")(app);

@@ -5,7 +5,7 @@ const RefreshToken = mongoose.model(
     new mongoose.Schema({
         userRef: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "userID"
+            ref: "User"
         },
         token: String
     })

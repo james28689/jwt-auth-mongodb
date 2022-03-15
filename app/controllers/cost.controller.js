@@ -59,3 +59,11 @@ exports.getCostsByUser = async (req, res) => {
 
     return res.status(200).send(user.costs);
 }
+
+exports.deleteAllCostsByUser = async (req, res) => {
+    Cost.deleteMany({user: req.userID}).catch(err => {
+        return res.status(500).send({message: err});
+    });
+
+    return res.status(201).send("Costs deleted.");
+}

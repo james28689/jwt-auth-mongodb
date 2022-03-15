@@ -19,4 +19,10 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.getFieldByUser
     );
+
+    app.delete(
+        "/api/field/delete-all",
+        [authJwt.verifyToken],
+        controller.deleteAllFieldsByUser
+    );
 }

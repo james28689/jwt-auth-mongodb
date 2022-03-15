@@ -49,3 +49,11 @@ exports.getFieldByUser = async (req, res) => {
 
     res.status(200).send(user.fields);
 }
+
+exports.deleteAllFieldsByUser = async (req, res) => {
+    Field.deleteMany({user: req.userID}).catch(err => {
+        return res.status(500).send({message: err});
+    });
+
+    return res.status(201).send("Fields deleted.");
+}

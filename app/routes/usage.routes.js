@@ -25,4 +25,10 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.deleteUsage
     );
+
+    app.delete(
+        "/api/usage/delete-all",
+        [authJwt.verifyToken],
+        controller.deleteAllUsagesByUser
+    );
 }

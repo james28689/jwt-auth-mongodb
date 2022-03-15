@@ -30,4 +30,6 @@ module.exports = function(app) {
     app.post("/api/auth/change-onboard", [authJwt.verifyToken], controller.changeOnboard);
 
     app.get("/api/auth/user-data", [authJwt.verifyToken], controller.getUserData);
+
+    app.delete("/api/auth/delete-user-data", [authJwt.verifyToken], controller.deleteUserData);
 };
