@@ -25,7 +25,7 @@ exports.addField = async (req, res) => {
         return res.status(500).send({ message: err });
     });
     
-    return res.status(201).send("Field created.");
+    return res.status(201).send({ message: "Field created." });
 }
 
 exports.updateField = async (req, res) => {
@@ -37,7 +37,7 @@ exports.updateField = async (req, res) => {
        if (err) {
            return res.status(500).send({ message: err });
        } else {
-           return res.status(201).send("Field updated.");
+           return res.status(201).send({ message: "Field updated." });
        }
    })
 }
@@ -55,5 +55,5 @@ exports.deleteAllFieldsByUser = async (req, res) => {
         return res.status(500).send({message: err});
     });
 
-    return res.status(201).send("Fields deleted.");
+    return res.status(201).send({ message: "Fields deleted." });
 }

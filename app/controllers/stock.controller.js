@@ -26,7 +26,7 @@ exports.createStock = async (req, res) => {
         return res.status(500).send({ message: err });
     });
 
-    return res.status(201).send("Stock created.")
+    return res.status(201).send({ message: "Stock created." });
 }
 
 exports.createOrder = async (req, res) => {

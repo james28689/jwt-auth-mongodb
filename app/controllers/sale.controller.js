@@ -37,7 +37,7 @@ exports.updateSale = async (req, res) => {
         if (err) {
             return res.status(500).send({ message: err });
         } else {
-            return res.status(201).send("Stock updated.");
+            return res.status(201).send("Sale updated.");
         }
     });
 }
