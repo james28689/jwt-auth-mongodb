@@ -47,7 +47,7 @@ exports.getFieldByUser = async (req, res) => {
         return res.status(500).send({ message: err });
     })
 
-    res.status(200).send(user.fields);
+    return res.status(200).send(user.fields);
 }
 
 exports.deleteAllFieldsByUser = async (req, res) => {
