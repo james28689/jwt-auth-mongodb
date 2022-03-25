@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 
-let env = process.env.NODE_ENV || "development"
+let env = process.env.NODE_ENV || "production"
 
 if (env == "development") {
     var fs = require("fs");
